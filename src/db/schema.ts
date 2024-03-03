@@ -22,6 +22,6 @@ export const transactions = pgTable("transactions", {
     .references(() => clients.id),
   amount: integer("amount").notNull(),
   type: transactionTypeEnum("transaction_type").notNull(),
-  description: varchar("description", { length: 10 }),
+  description: varchar("description", { length: 10 }).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

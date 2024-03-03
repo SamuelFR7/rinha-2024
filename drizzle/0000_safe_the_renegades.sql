@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS "transactions" (
 	"client_id" integer NOT NULL,
 	"amount" integer NOT NULL,
 	"transaction_type" "transaction_type" NOT NULL,
-	"description" varchar(10),
+	"description" varchar(10) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

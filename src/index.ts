@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { db } from "./db";
 import { clients, transactions } from "./db/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 const createTransaction = new Elysia()
   .post(
@@ -17,7 +17,7 @@ const createTransaction = new Elysia()
 
       if (!clientExists) {
         set.status = 404;
-        return { message: "User not found" };
+        return { message: "Client not found" };
       }
 
       const { descricao, tipo, valor } = body;
@@ -27,7 +27,7 @@ const createTransaction = new Elysia()
         clientExists.balance - valor < clientExists.limit * -1
       ) {
         set.status = 422;
-        return { message: "User limit exceeded" };
+        return { message: "Client limit exceeded" };
       }
 
       const updatedClient = await db.transaction(async (tx) => {
@@ -78,8 +78,47 @@ const createTransaction = new Elysia()
     }
   });
 
+const statement = new Elysia().get(
+  "/clientes/:id/extrato",
+  async ({ params: { id }, set }) => {
+    const [client] = await db.select().from(clients).where(eq(clients.id, id));
+
+    if (!client) {
+      set.status = 404;
+      return { message: "Client not found" };
+    }
+
+    const lastTransactions = await db
+      .select({
+        valor: transactions.amount,
+        tipo: transactions.type,
+        descricao: transactions.description,
+        realizada_em: transactions.createdAt,
+      })
+      .from(transactions)
+      .where(eq(transactions.clientId, client.id))
+      .orderBy(desc(transactions.createdAt))
+      .limit(10);
+
+    return {
+      saldo: {
+        total: client.balance,
+        data_extrato: new Date().toISOString(),
+        limite: client.limit,
+      },
+      ultimas_transacoes: lastTransactions,
+    };
+  },
+  {
+    params: t.Object({
+      id: t.Numeric(),
+    }),
+  }
+);
+
 const app = new Elysia()
   .use(createTransaction)
+  .use(statement)
   .listen(process.env.PORT || 3333);
 
 console.log(

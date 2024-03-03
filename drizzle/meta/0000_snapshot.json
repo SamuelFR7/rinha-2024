@@ -1,5 +1,5 @@
 {
-  "id": "02c37885-9c2e-43ab-97b4-fbd71d2bbf9d",
+  "id": "fd9b8da2-8fd0-4f41-9cb5-ce132f012c2a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -65,7 +65,7 @@
           "name": "description",
           "type": "varchar(10)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",

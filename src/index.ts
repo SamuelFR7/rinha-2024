@@ -119,7 +119,7 @@ const statement = new Elysia().get(
 const app = new Elysia()
   .use(createTransaction)
   .use(statement)
-  .listen(process.env.PORT || 3333);
+  .listen(process.env.PORT || 3000);
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`

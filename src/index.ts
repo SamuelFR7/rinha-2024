@@ -59,7 +59,7 @@ const createTransaction = new Elysia()
         id: t.Numeric(),
       }),
       body: t.Object({
-        valor: t.Number(),
+        valor: t.Integer(),
         tipo: t.String({
           default: "c",
           pattern: "^(c|d)$",
